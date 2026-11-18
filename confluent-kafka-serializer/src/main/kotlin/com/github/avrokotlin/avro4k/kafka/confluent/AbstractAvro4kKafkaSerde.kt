@@ -198,6 +198,19 @@ public abstract class AbstractAvro4kKafkaDeserializer<T : Any>(
         )
     }
 
+    /**
+     * kafka-avro-serializer 8.3.3 and 8.4.1 read records through this method instead of the one above, so it reads with
+     * avro4k the same way. It cannot be marked `override` while avro4k compiles against 8.3.2, which does not have it,
+     * but the JVM still dispatches to it on the versions that call it, as the name and parameter types match.
+     */
+    @Suppress("UNUSED_PARAMETER")
+    protected fun getDatumReader(
+        topic: String?,
+        writerSchemaId: SchemaId?,
+        writerSchema: Schema?,
+        readerSchema: Schema?,
+    ): DatumReader<*> = getDatumReader(writerSchemaId, writerSchema, readerSchema)
+
     @InternalAvro4kApi
     protected abstract val deserializer: DeserializationStrategy<T>
 
